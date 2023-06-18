@@ -11,6 +11,7 @@ name: Multi-Arch Images
 env:
   PREFIX_URL: https://downloads.immortalwrt.org/snapshots/targets/
   REGISTRY: ghcr.io
+  IMAGE_NAME: wynemo/openwrt
 
 on:
   push:
@@ -122,7 +123,7 @@ jobs:
           $GITHUB_WORKSPACE/scripts/preset-terminal-tools.sh
           sed -i "/CONFIG_TARGET_ROOTFS_SQUASHFS/s/.*/# CONFIG_TARGET_ROOTFS_SQUASHFS is not set/;
             /CONFIG_TARGET_ROOTFS_EXT4FS/s/.*/# CONFIG_TARGET_ROOTFS_EXT4FS is not set/" .config
-          sed -i "s/# CONFIG_TARGET_ROOTFS_TARGZ is not set/CONFIG_TARGET_ROOTFS_TARGZ=y/" .config
+          sed -i '/CONFIG_ISO_IMAGES=y/d;/CONFIG_QCOW2_IMAGES=y/d;/CONFIG_VDI_IMAGES=y/d;/CONFIG_VMDK_IMAGES=y/d;/CONFIG_VHDX_IMAGES=y/d;/CONFIG_TARGET_IMAGES_GZIP=y/d' .config
           cat .config
           export CONFIG_NORMAL_PACKAGES=$(cat $GITHUB_WORKSPACE/config/normal-packages.config | tr -s "\n" " ")
           make image PACKAGES="$CONFIG_NORMAL_PACKAGES" FILES="files"
@@ -141,6 +142,14 @@ jobs:
           tags: |
             openwrt:${{ env.DEVICE_PLATFORM }}
 
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: | 
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:{{ env.DOCKER_EXTERA_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:{{ env.DEVICE_PLATFORM }}
+
       - name: Build & Push Normal Image (Extra Tag)
         if: env.DOCKER_EXTERA_TAG != null
         uses: docker/build-push-action@v2
@@ -149,6 +158,5 @@ jobs:
           file: Dockerfile
           context: .
           push: true
-          tags: |
-            openwrt:${{ env.DEVICE_PLATFORM }}
-            openwrt:${{ env.DOCKER_EXTERA_TAG }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

@@ -126,8 +126,9 @@ jobs:
           if [ $DEVICE_PLATFORM eq "x86_64"]
           then
             sed -i '/CONFIG_ISO_IMAGES=y/d;/CONFIG_QCOW2_IMAGES=y/d;/CONFIG_VDI_IMAGES=y/d;/CONFIG_VMDK_IMAGES=y/d;/CONFIG_VHDX_IMAGES=y/d;/CONFIG_TARGET_IMAGES_GZIP=y/d' .config
+          else
+            sed -i "s/# CONFIG_TARGET_ROOTFS_TARGZ is not set/CONFIG_TARGET_ROOTFS_TARGZ=y/" .config
           fi
-          sed -i "s/# CONFIG_TARGET_ROOTFS_TARGZ is not set/CONFIG_TARGET_ROOTFS_TARGZ=y/" .config
           cat .config
           export CONFIG_NORMAL_PACKAGES=$(cat $GITHUB_WORKSPACE/config/normal-packages.config | tr -s "\n" " ")
           make image PACKAGES="$CONFIG_NORMAL_PACKAGES" FILES="files"

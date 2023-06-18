@@ -127,7 +127,7 @@ jobs:
           sed -i "/CONFIG_TARGET_ROOTFS_SQUASHFS/s/.*/# CONFIG_TARGET_ROOTFS_SQUASHFS is not set/;
             /CONFIG_TARGET_ROOTFS_EXT4FS/s/.*/# CONFIG_TARGET_ROOTFS_EXT4FS is not set/" .config
           echo "$DEVICE_PLATFORM"
-          if [ $DEVICE_PLATFORM -eq "x86_64" ]
+          if [ "$DEVICE_PLATFORM" = "x86_64" ]
           then
             echo "equal $DEVICE_PLATFORM"
             sed -i '/CONFIG_ISO_IMAGES=y/d;/CONFIG_QCOW2_IMAGES=y/d;/CONFIG_VDI_IMAGES=y/d;/CONFIG_VMDK_IMAGES=y/d;/CONFIG_VHDX_IMAGES=y/d;/CONFIG_TARGET_IMAGES_GZIP=y/d' .config

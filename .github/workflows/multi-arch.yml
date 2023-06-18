@@ -53,6 +53,9 @@ jobs:
     name: ${{ matrix.TARGETS }}
     needs: [Config]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.Config.outputs.TARGETS)}}

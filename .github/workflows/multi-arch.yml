@@ -163,5 +163,5 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:{{ env.DOCKER_EXTERA_TAG }}
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:{{ env.DEVICE_PLATFORM }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DOCKER_EXTERA_TAG }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.DEVICE_PLATFORM }}
